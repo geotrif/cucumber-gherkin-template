@@ -53,10 +53,9 @@ You can then execute your native executable with: `./target/cucumber-gherkin-tem
 
 If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
 
-## Provided Code
+## Plugins required for your IDE
 
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+Go to Settings/Preferences -> Plugins and search for and install the following plugins:
+- Cucumber
+- Cucumber for Java
+- Gherkin
