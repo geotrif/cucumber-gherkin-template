@@ -55,21 +55,14 @@
 
         <dependency>
             <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
             <version>7.29.0</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit-platform-engine</artifactId>
-            <version>7.14.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-suite-api</artifactId>
+            <artifactId>junit-platform-suite</artifactId>
             <version>1.10.0</version>
             <scope>test</scope>
         </dependency>
@@ -105,6 +98,11 @@
                 <configuration>
                     <parameters>true</parameters>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>app.getxray</groupId>
+                <artifactId>xray-maven-plugin</artifactId>
+                <version>0.7.6</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>

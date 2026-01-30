@@ -9,5 +9,6 @@ import org.junit.platform.suite.api.Suite;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features/scenario_outline")
 @ConfigurationParameter(key = "cucumber.glue", value = "org.gherkin.scenario.outline")
+@ConfigurationParameter(key = "cucumber.plugin", value = "json:target/cucumber-report.json, pretty")
 public class RunCalculatorTest {
 }

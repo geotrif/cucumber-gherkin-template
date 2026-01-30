@@ -1,0 +1,63 @@
+name: E2E automation
+
+on:
+  schedule:
+    - cron: "5 * * * *" # every 5 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    env:
+      # Change this to your actual Cucumber JSON output file
+      CUCUMBER_JSON_PATH: target/cucumber-report.json
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Run E2E tests
+        # Allow the workflow to continue so we can upload artifacts even if tests fail
+        continue-on-error: true
+        run: mvn -B clean test
+
+      - name: Show report files (debug)
+        if: always()
+        run: |
+          echo "Looking for cucumber json at: $CUCUMBER_JSON_PATH"
+          ls -la target || true
+          find . -maxdepth 4 -type f -name "*.json" -o -name "*cucumber*" || true
+
+      - name: Upload cucumber JSON report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-json-report
+          path: ${{ env.CUCUMBER_JSON_PATH }}
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Fail job if tests failed
+        # If mvn failed, the job should be marked failed (but only after artifacts upload)
+        if: ${{ always() }}
+        run: |
+          # If Maven failed, it will have returned non-zero, but we used continue-on-error.
+          # Detect test failures by checking Surefire reports for failures/errors.
+          if ls -1 target/surefire-reports/*.txt >/dev/null 2>&1; then
+            if grep -R "Tests run: .*Failures: [1-9]\|Errors: [1-9]" -n target/surefire-reports >/dev/null 2>&1; then
+              echo "Detected test failures in surefire-reports."
+              exit 1
+            fi
+          fi
+          echo "No failures detected (or no surefire txt reports found)."
